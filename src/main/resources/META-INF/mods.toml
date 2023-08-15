@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+license="All rights reserved"
+
+[[mods]]
+modId="momovements"
+version="1.0"
+displayName="Mo' Movements"
+logoFile="momorvements.png"
+credits="Torchwood_one for the codeing, and uwugoat for the assets"
+authors="Torchwood_one, uwugoat"
+
+description='''
+This is a simple mod that allows you to use a key bind to crawl, and a command to sit
+'''
+
+[[dependencies.momovements]]
+    modId="forge"
+    mandatory=true
+    versionRange="[43,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.momovements]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.2,1.20)"
+    ordering="NONE"
+    side="BOTH"
