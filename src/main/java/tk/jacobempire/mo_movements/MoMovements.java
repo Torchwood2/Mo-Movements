@@ -67,6 +67,7 @@ public class MoMovements
 
     public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         CommandSit.register(dispatcher);
+
     }
 
     @SubscribeEvent

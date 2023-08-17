@@ -2,7 +2,10 @@ package tk.jacobempire.mo_movements.commands;
 
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.math.Vector3d;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
