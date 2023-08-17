@@ -27,18 +27,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import tk.jacobempire.mo_movements.commands.CommandSit;
+import tk.jacobempire.mo_movements.networking.ModMessages;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MoMovements.MODID)
 public class MoMovements
 {
-    // Define mod id in a common place for everything to reference
+
     public static final String MODID = "momovements";
-    // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
-
-
-
 
     public MoMovements()
     {
@@ -54,7 +51,11 @@ public class MoMovements
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
+        event.enqueueWork(() -> {
 
+        });
+
+        ModMessages.register();
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
