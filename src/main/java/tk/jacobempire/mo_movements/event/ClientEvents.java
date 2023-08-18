@@ -136,8 +136,6 @@ public class ClientEvents {
         }
     }
 
-
-
     private static void setStanding() {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
