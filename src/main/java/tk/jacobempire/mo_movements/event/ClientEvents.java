@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
@@ -51,10 +52,10 @@ public class ClientEvents {
         if (KeyBinding.CRAWL_KEY.isDown()) {
 
             if (!crawling) {
-                player.sendSystemMessage(Component.literal("You are now crawling."));
+                player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
                 setCrawling();
             } else {
-                player.sendSystemMessage(Component.literal("You are no longer crawling."));
+                player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
                 setStanding();
             }
         }
@@ -70,7 +71,7 @@ public class ClientEvents {
                     ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
                     sit(serverPlayer, serverLevel);
                 }
-            else player.sendSystemMessage(Component.literal("Error: Code executed on client side!"));
+            else player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
         }
     }
 
@@ -85,7 +86,7 @@ public class ClientEvents {
                     sit(context.getSource().getPlayer(), context.getSource().getLevel());
                         return 1;
                     } else {
-                        context.getSource().sendFailure(Component.literal("Only players can use this command!"));
+                        context.getSource().sendFailure(Component.literal("Only players can use this command!").withStyle(ChatFormatting.DARK_RED));
                         return 0;
                     }
                 });
@@ -142,5 +143,14 @@ public class ClientEvents {
         Player player = mc.player;
         player.setForcedPose(null);
         crawling = false;
+    }
+
+    @Mod.EventBusSubscriber(modid = MoMovements.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class ClientModBusEvents{
+        @SubscribeEvent
+        public static void onKeyRegister(RegisterKeyMappingsEvent event){
+            event.register(KeyBinding.SIT_KEY);
+            event.register(KeyBinding.CRAWL_KEY);
+        }
     }
 }
