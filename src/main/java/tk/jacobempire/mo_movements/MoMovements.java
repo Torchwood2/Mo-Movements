@@ -17,7 +17,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -27,6 +29,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import tk.jacobempire.mo_movements.commands.CommandSit;
+import tk.jacobempire.mo_movements.config.MoMovementsClientConfigs;
 import tk.jacobempire.mo_movements.networking.ModMessages;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -44,6 +47,8 @@ public class MoMovements
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, MoMovementsClientConfigs.SPEC, "mo-movements-client.toml");
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
