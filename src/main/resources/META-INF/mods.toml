@@ -7,8 +7,8 @@ modId="momovements"
 version="1.0"
 displayName="Mo' Movements"
 logoFile="momorvements.png"
-credits="Torchwood_one for the codeing, and uwugoat for the assets"
-authors="Torchwood_one, uwugoat"
+credits="Torchwood_one for the code, and uwugoat for the assets"
+authors="Torchwood_one, uwugoat, 1JamesLeDolphin"
 
 description='''
 This is a simple mod that allows you to use a key bind to crawl, and a command to sit

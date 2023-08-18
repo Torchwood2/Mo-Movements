@@ -8,9 +8,13 @@ import org.lwjgl.glfw.GLFW;
 public class KeyBinding {
     public static final String KEY_CATEGORY_MOMOVEMENTS = "key.momovements.movements";
     public static final String KEY_SIT = "key.momovements.sit";
+    public static final String KEY_CRAWl = "key.momovements.crawl";
 
     public static final KeyMapping SIT_KEY = new KeyMapping(KEY_SIT, KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, KEY_CATEGORY_MOMOVEMENTS);
+
+    public static final KeyMapping CRAWL_KEY = new KeyMapping(KEY_CRAWl, KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, KEY_CATEGORY_MOMOVEMENTS);
 
 
 }
