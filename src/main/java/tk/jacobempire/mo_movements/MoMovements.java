@@ -5,6 +5,8 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -15,6 +17,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -30,6 +33,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import tk.jacobempire.mo_movements.commands.CommandSit;
 import tk.jacobempire.mo_movements.config.MoMovementsClientConfigs;
+import tk.jacobempire.mo_movements.event.ClientEvents;
 import tk.jacobempire.mo_movements.networking.ModMessages;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -79,6 +83,19 @@ public class MoMovements
     public void onRegisterCommandEvent(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
         this.registerCommands(commandDispatcher);
+    }
+    @SubscribeEvent
+    public void playerEvent(TickEvent.PlayerTickEvent event) {
+        Player player = event.player;
+        if (player != null && player.getForcedPose() != null) {
+            if (player.getForcedPose().equals(Pose.SLEEPING) || player.getForcedPose().equals(Pose.SWIMMING)) {
+                if (player.isUnderWater()) {
+                    player.setForcedPose(null);
+                    ClientEvents.laying = false;
+                    ClientEvents.crawling = false;
+                }
+            }
+        }
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

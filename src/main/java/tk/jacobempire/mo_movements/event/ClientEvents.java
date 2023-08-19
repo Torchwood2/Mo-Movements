@@ -41,7 +41,8 @@ import static net.minecraft.commands.Commands.literal;
 
 @Mod.EventBusSubscriber(modid = MoMovements.MODID, value = Dist.CLIENT)
 public class ClientEvents {
-    private static boolean crawling = false;
+    public static boolean crawling = false;
+    public static boolean laying = false;
     private static final String TAG_CHAIR = "Chair";
 
     @SubscribeEvent
@@ -53,25 +54,44 @@ public class ClientEvents {
 
             if (!crawling) {
                 player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
-                setCrawling();
+                player.setForcedPose(Pose.SWIMMING);
+                player.refreshDimensions();
+                crawling = true;
             } else {
                 player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
-                setStanding();
+                player.setForcedPose(null);
+                player.refreshDimensions();
+                crawling = false;
             }
         }
+        if (KeyBinding.LAY_KEY.isDown()) {
+            if (!laying) {
+                player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
+                player.setForcedPose(Pose.SLEEPING);
+                player.refreshDimensions();
+                laying = true;
+            } else {
+                player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
+                player.setForcedPose(null);
+                player.refreshDimensions();
+                laying = false;
+            }
+        }
+
         if (KeyBinding.SIT_KEY.isDown()) {
             if (player.getServer() != null) {
                 ServerLevel serverLevel = player.getServer().getLevel(level.dimension());
                 ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
                 sit(serverPlayer, serverLevel);
+                player.refreshDimensions();
             }
 
             if (mc.hasSingleplayerServer()) {
                 ServerLevel serverLevel = mc.getSingleplayerServer().getLevel(level.dimension());
                     ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
                     sit(serverPlayer, serverLevel);
-                }
-            else player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
+                player.refreshDimensions();
+                } else player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
         }
     }
 
@@ -93,13 +113,6 @@ public class ClientEvents {
 
         dispatcher.register(sitCommand);
     }
-
-    private static void setCrawling() {
-        Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
-            player.setForcedPose(Pose.SWIMMING);
-            crawling = true;
-        }
 
     private static void sit(Entity entity, Level level) {
         if (entity instanceof ServerPlayer player) {
@@ -134,13 +147,6 @@ public class ClientEvents {
                 } else return;
             }
         }
-    }
-
-    private static void setStanding() {
-        Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
-        player.setForcedPose(null);
-        crawling = false;
     }
 
     @Mod.EventBusSubscriber(modid = MoMovements.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
