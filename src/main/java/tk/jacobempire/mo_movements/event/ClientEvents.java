@@ -1,15 +1,12 @@
 package tk.jacobempire.mo_movements.event;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -18,18 +15,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MinecartItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import tk.jacobempire.mo_movements.MoMovements;
@@ -49,49 +41,53 @@ public class ClientEvents {
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        Level level = player.getLevel();
-        if (KeyBinding.CRAWL_KEY.isDown()) {
 
-            if (!crawling) {
-                player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
-                player.setForcedPose(Pose.SWIMMING);
-                player.refreshDimensions();
-                crawling = true;
-            } else {
-                player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
-                player.setForcedPose(null);
-                player.refreshDimensions();
-                crawling = false;
-            }
-        }
-        if (KeyBinding.LAY_KEY.isDown()) {
-            if (!laying) {
-                player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
-                player.setForcedPose(Pose.SLEEPING);
-                player.refreshDimensions();
-                laying = true;
-            } else {
-                player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
-                player.setForcedPose(null);
-                player.refreshDimensions();
-                laying = false;
-            }
-        }
+        if (player != null) {
+            Level level = player.getLevel();
+            if (KeyBinding.CRAWL_KEY.isDown()) {
 
-        if (KeyBinding.SIT_KEY.isDown()) {
-            if (player.getServer() != null) {
-                ServerLevel serverLevel = player.getServer().getLevel(level.dimension());
-                ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
-                sit(serverPlayer, serverLevel);
-                player.refreshDimensions();
+                if (!crawling) {
+                    player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(Pose.SWIMMING);
+                    player.refreshDimensions();
+                    crawling = true;
+                } else {
+                    player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(null);
+                    player.refreshDimensions();
+                    crawling = false;
+                }
+            }
+            if (KeyBinding.LAY_KEY.isDown()) {
+                if (!laying) {
+                    player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(Pose.SLEEPING);
+                    player.refreshDimensions();
+                    laying = true;
+                } else {
+                    player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(null);
+                    player.refreshDimensions();
+                    laying = false;
+                }
             }
 
-            if (mc.hasSingleplayerServer()) {
-                ServerLevel serverLevel = mc.getSingleplayerServer().getLevel(level.dimension());
+            if (KeyBinding.SIT_KEY.isDown()) {
+                if (player.getServer() != null) {
+                    ServerLevel serverLevel = player.getServer().getLevel(level.dimension());
                     ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
                     sit(serverPlayer, serverLevel);
-                player.refreshDimensions();
-                } else player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
+                    player.refreshDimensions();
+                }
+
+                if (mc.hasSingleplayerServer()) {
+                    ServerLevel serverLevel = mc.getSingleplayerServer().getLevel(level.dimension());
+                    ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
+                    sit(serverPlayer, serverLevel);
+                    player.refreshDimensions();
+                } else
+                    player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
+            }
         }
     }
 
@@ -103,7 +99,7 @@ public class ClientEvents {
                 .executes(context -> {
                     Entity entity = context.getSource().getEntity();
                     if (entity instanceof ServerPlayer player) {
-                    sit(context.getSource().getPlayer(), context.getSource().getLevel());
+                        sit(context.getSource().getPlayer(), context.getSource().getLevel());
                         return 1;
                     } else {
                         context.getSource().sendFailure(Component.literal("Only players can use this command!").withStyle(ChatFormatting.DARK_RED));
@@ -150,9 +146,9 @@ public class ClientEvents {
     }
 
     @Mod.EventBusSubscriber(modid = MoMovements.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class ClientModBusEvents{
+    public static class ClientModBusEvents {
         @SubscribeEvent
-        public static void onKeyRegister(RegisterKeyMappingsEvent event){
+        public static void onKeyRegister(RegisterKeyMappingsEvent event) {
             event.register(KeyBinding.SIT_KEY);
             event.register(KeyBinding.CRAWL_KEY);
         }
