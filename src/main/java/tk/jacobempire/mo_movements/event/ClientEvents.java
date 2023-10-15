@@ -5,8 +5,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.ArgumentSignatures;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.LastSeenMessages;
+import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -25,8 +29,11 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import tk.jacobempire.mo_movements.MoMovements;
+import tk.jacobempire.mo_movements.networking.ModMessages;
+import tk.jacobempire.mo_movements.networking.packet.SitPacket;
 import tk.jacobempire.mo_movements.util.KeyBinding;
 
+import java.time.Instant;
 import java.util.List;
 
 import static net.minecraft.commands.Commands.literal;
@@ -41,7 +48,6 @@ public class ClientEvents {
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-
         if (player != null) {
             Level level = player.getLevel();
             if (KeyBinding.CRAWL_KEY.isDown()) {
@@ -73,20 +79,8 @@ public class ClientEvents {
             }
 
             if (KeyBinding.SIT_KEY.isDown()) {
-                if (player.getServer() != null) {
-                    ServerLevel serverLevel = player.getServer().getLevel(level.dimension());
-                    ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
-                    sit(serverPlayer, serverLevel);
-                    player.refreshDimensions();
-                }
 
-                if (mc.hasSingleplayerServer()) {
-                    ServerLevel serverLevel = mc.getSingleplayerServer().getLevel(level.dimension());
-                    ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
-                    sit(serverPlayer, serverLevel);
-                    player.refreshDimensions();
-                } else
-                    player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
+                ModMessages.sendToServer(new SitPacket());
             }
         }
     }
@@ -151,6 +145,7 @@ public class ClientEvents {
         public static void onKeyRegister(RegisterKeyMappingsEvent event) {
             event.register(KeyBinding.SIT_KEY);
             event.register(KeyBinding.CRAWL_KEY);
+            event.register(KeyBinding.LAY_KEY);
         }
     }
 }

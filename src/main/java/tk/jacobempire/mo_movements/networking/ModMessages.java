@@ -2,10 +2,12 @@ package tk.jacobempire.mo_movements.networking;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import tk.jacobempire.mo_movements.MoMovements;
+import tk.jacobempire.mo_movements.networking.packet.SitPacket;
 
 public class ModMessages {
     private static SimpleChannel INSTANCE;
@@ -25,6 +27,12 @@ public class ModMessages {
 
 
         INSTANCE = net;
+
+        net.messageBuilder(SitPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(SitPacket::new)
+                .encoder(SitPacket::toBytes)
+                .consumerMainThread(SitPacket::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message){
