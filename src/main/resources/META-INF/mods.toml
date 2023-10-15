@@ -11,7 +11,7 @@ credits="Torchwood_one, 1JamesLeDolpgin and sam for the code, and uwugoat for th
 authors="Torchwood_one, uwugoat, 1JamesLeDolphin, sam"
 
 description='''
-This is a simple mod that allows you to use a key bind to crawl, and a command to sit
+This is a simple mod that allows you to use a key bind to crawl, sit and lay down.
 '''
 
 [[dependencies.momovements]]
