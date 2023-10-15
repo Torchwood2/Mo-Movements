@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -42,82 +41,53 @@ public class ClientEvents {
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
+
         if (player != null) {
             Level level = player.getLevel();
-            if (player.getServer() != null) {
-                ServerLevel serverLevel = player.getServer().getLevel(level.dimension());
-                ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
-                if (KeyBinding.CRAWL_KEY.isDown()) {
+            if (KeyBinding.CRAWL_KEY.isDown()) {
 
-                    if (!crawling) {
-                        player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(Pose.SWIMMING);
-                        player.refreshDimensions();
-                        crawling = true;
-                    } else {
-                        player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(null);
-                        player.refreshDimensions();
-                        crawling = false;
-                    }
-                }
-                if (KeyBinding.LAY_KEY.isDown()) {
-                    if (!laying) {
-                        player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(Pose.SLEEPING);
-                        player.refreshDimensions();
-                        laying = true;
-                    } else {
-                        player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(null);
-                        player.refreshDimensions();
-                        laying = false;
-                    }
-                }
-
-                if (KeyBinding.SIT_KEY.isDown()) {
-
-                    sit(serverPlayer, serverLevel);
+                if (!crawling) {
+                    player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(Pose.SWIMMING);
                     player.refreshDimensions();
+                    crawling = true;
+                } else {
+                    player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(null);
+                    player.refreshDimensions();
+                    crawling = false;
                 }
             }
-            if (mc.hasSingleplayerServer()) {
-                ServerLevel serverLevel = mc.getSingleplayerServer().getLevel(level.dimension());
-                ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
-                if (KeyBinding.CRAWL_KEY.isDown()) {
-
-                    if (!crawling) {
-                        player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(Pose.SWIMMING);
-                        player.refreshDimensions();
-                        crawling = true;
-                    } else {
-                        player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(null);
-                        player.refreshDimensions();
-                        crawling = false;
-                    }
+            if (KeyBinding.LAY_KEY.isDown()) {
+                if (!laying) {
+                    player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(Pose.SLEEPING);
+                    player.refreshDimensions();
+                    laying = true;
+                } else {
+                    player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
+                    player.setForcedPose(null);
+                    player.refreshDimensions();
+                    laying = false;
                 }
-                if (KeyBinding.LAY_KEY.isDown()) {
-                    if (!laying) {
-                        player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(Pose.SLEEPING);
-                        player.refreshDimensions();
-                        laying = true;
-                    } else {
-                        player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
-                        player.setForcedPose(null);
-                        player.refreshDimensions();
-                        laying = false;
-                    }
-                }
+            }
 
-                if (KeyBinding.SIT_KEY.isDown()) {
+            if (KeyBinding.SIT_KEY.isDown()) {
+                if (player.getServer() != null) {
+                    ServerLevel serverLevel = player.getServer().getLevel(level.dimension());
+                    ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
                     sit(serverPlayer, serverLevel);
                     player.refreshDimensions();
                 }
-            } else
-                player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
+
+                if (mc.hasSingleplayerServer()) {
+                    ServerLevel serverLevel = mc.getSingleplayerServer().getLevel(level.dimension());
+                    ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
+                    sit(serverPlayer, serverLevel);
+                    player.refreshDimensions();
+                } else
+                    player.sendSystemMessage(Component.literal("Error: Code executed on client side!").withStyle(ChatFormatting.DARK_RED));
+            }
         }
     }
 
