@@ -45,9 +45,6 @@ public class ClientEvents {
         if (player != null) {
             Level level = player.getLevel();
             if (KeyBinding.CRAWL_KEY.isDown()) {
-                if(!isServerSide(level)){
-                    return;
-                }
 
                 if (!crawling) {
                     player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
@@ -76,9 +73,6 @@ public class ClientEvents {
             }
 
             if (KeyBinding.SIT_KEY.isDown()) {
-                if(!isServerSide(level)){
-                    return;
-                }
                 if (player.getServer() != null) {
                     ServerLevel serverLevel = player.getServer().getLevel(level.dimension());
                     ServerPlayer serverPlayer = (ServerPlayer) serverLevel.getPlayerByUUID(player.getUUID());
@@ -159,13 +153,4 @@ public class ClientEvents {
             event.register(KeyBinding.CRAWL_KEY);
         }
     }
-
-    public static boolean isServerSide(Entity entity) {
-        return !entity.level.isClientSide() && !(entity instanceof ServerPlayer && ((ServerPlayer) entity).connection.getConnection().isConnected());
-    }
-
-    public static boolean isServerSide(Level level) {
-        return !level.isClientSide();
-    }
 }
-
