@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.Mod;
 import tk.jacobempire.mo_movements.MoMovements;
 import tk.jacobempire.mo_movements.networking.ModMessages;
 import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
+import tk.jacobempire.mo_movements.networking.packet.LayPacket;
 import tk.jacobempire.mo_movements.networking.packet.SitPacket;
 import tk.jacobempire.mo_movements.util.KeyBinding;
 
@@ -57,17 +58,7 @@ public class ClientEvents {
 
             }
             if (KeyBinding.LAY_KEY.isDown()) {
-                if (!laying) {
-                    player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
-                    player.setForcedPose(Pose.SLEEPING);
-                    player.refreshDimensions();
-                    laying = true;
-                } else {
-                    player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
-                    player.setForcedPose(null);
-                    player.refreshDimensions();
-                    laying = false;
-                }
+                ModMessages.sendToServer(new LayPacket());
             }
 
             if (KeyBinding.SIT_KEY.isDown()) {

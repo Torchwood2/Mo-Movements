@@ -9,7 +9,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-import tk.jacobempire.mo_movements.util.KeyBinding;
 
 import java.util.function.Supplier;
 
