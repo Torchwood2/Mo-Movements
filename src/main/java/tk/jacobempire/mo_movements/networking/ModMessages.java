@@ -7,6 +7,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import tk.jacobempire.mo_movements.MoMovements;
+import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
 import tk.jacobempire.mo_movements.networking.packet.SitPacket;
 
 public class ModMessages {
@@ -32,6 +33,12 @@ public class ModMessages {
                 .decoder(SitPacket::new)
                 .encoder(SitPacket::toBytes)
                 .consumerMainThread(SitPacket::handle)
+                .add();
+
+        net.messageBuilder(CrawlPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(CrawlPacket::new)
+                .encoder(CrawlPacket::toBytes)
+                .consumerMainThread(CrawlPacket::handle)
                 .add();
     }
 

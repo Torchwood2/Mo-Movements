@@ -30,6 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import tk.jacobempire.mo_movements.MoMovements;
 import tk.jacobempire.mo_movements.networking.ModMessages;
+import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
 import tk.jacobempire.mo_movements.networking.packet.SitPacket;
 import tk.jacobempire.mo_movements.util.KeyBinding;
 
@@ -52,17 +53,8 @@ public class ClientEvents {
             Level level = player.getLevel();
             if (KeyBinding.CRAWL_KEY.isDown()) {
 
-                if (!crawling) {
-                    player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
-                    player.setForcedPose(Pose.SWIMMING);
-                    player.refreshDimensions();
-                    crawling = true;
-                } else {
-                    player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
-                    player.setForcedPose(null);
-                    player.refreshDimensions();
-                    crawling = false;
-                }
+                ModMessages.sendToServer(new CrawlPacket());
+
             }
             if (KeyBinding.LAY_KEY.isDown()) {
                 if (!laying) {
