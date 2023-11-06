@@ -5,18 +5,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.ArgumentSignatures;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.LastSeenMessages;
-import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,13 +23,12 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import tk.jacobempire.mo_movements.MoMovements;
-import tk.jacobempire.mo_movements.networking.ModMessages;
+import tk.jacobempire.mo_movements.networking.ModPackets;
 import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
 import tk.jacobempire.mo_movements.networking.packet.LayPacket;
 import tk.jacobempire.mo_movements.networking.packet.SitPacket;
 import tk.jacobempire.mo_movements.util.KeyBinding;
 
-import java.time.Instant;
 import java.util.List;
 
 import static net.minecraft.commands.Commands.literal;
@@ -54,16 +47,16 @@ public class ClientEvents {
             Level level = player.getLevel();
             if (KeyBinding.CRAWL_KEY.isDown()) {
 
-                ModMessages.sendToServer(new CrawlPacket());
+                ModPackets.sendToServer(new CrawlPacket());
 
             }
             if (KeyBinding.LAY_KEY.isDown()) {
-                ModMessages.sendToServer(new LayPacket());
+                ModPackets.sendToServer(new LayPacket());
             }
 
             if (KeyBinding.SIT_KEY.isDown()) {
 
-                ModMessages.sendToServer(new SitPacket());
+                ModPackets.sendToServer(new SitPacket());
             }
         }
     }

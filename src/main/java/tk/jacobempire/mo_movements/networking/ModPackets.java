@@ -11,7 +11,7 @@ import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
 import tk.jacobempire.mo_movements.networking.packet.LayPacket;
 import tk.jacobempire.mo_movements.networking.packet.SitPacket;
 
-public class ModMessages {
+public class ModPackets {
     private static SimpleChannel INSTANCE;
 
     private static int packetId = 0;

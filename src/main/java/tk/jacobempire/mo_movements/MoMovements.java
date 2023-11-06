@@ -2,18 +2,9 @@ package tk.jacobempire.mo_movements;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -27,14 +18,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import tk.jacobempire.mo_movements.commands.CommandSit;
 import tk.jacobempire.mo_movements.config.MoMovementsClientConfigs;
 import tk.jacobempire.mo_movements.event.ClientEvents;
-import tk.jacobempire.mo_movements.networking.ModMessages;
+import tk.jacobempire.mo_movements.networking.ModPackets;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MoMovements.MODID)
@@ -64,7 +52,7 @@ public class MoMovements
 
         });
 
-        ModMessages.register();
+        ModPackets.register();
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
