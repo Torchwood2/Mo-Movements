@@ -33,9 +33,9 @@ public class UnSitPacket {
                     CompoundTag tag = armorStand.getPersistentData();
                     if (tag.getBoolean("chair")) {
                         // Logic for removing unoccupied chairs
+                        player.stopRiding();
                         armorStand.discard();
                     }
-                    player.stopRiding();
                 }
             }
         });

@@ -36,7 +36,14 @@ public class SitPacket {
                 ServerLevel level = player.getLevel();
 
                 // Logic for when the player sits for the first time
-                ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, level);
+                ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, level){
+                    @Override
+                    public void tick() {
+                        super.tick();
+                        if (!isVehicle())
+                            this.discard();
+                    }
+                };
                 armorStand.setPos(player.getX(), player.getY() - 1.75, player.getZ());
                 armorStand.getOnPos();
                 CompoundTag tag = armorStand.getPersistentData();
@@ -56,6 +63,7 @@ public class SitPacket {
                 level.addFreshEntity(armorStand);
                 player.startRiding(armorStand, true);
                 player.sendSystemMessage(Component.literal("You have sat down.").withStyle(ChatFormatting.GREEN));
+                player.isPassenger();
             }
         });
         return true;

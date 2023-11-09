@@ -63,6 +63,7 @@ public class ClientEvents {
                 } else {
                     sitKeyPressed = false;
                     ModPackets.sendToServer(new UnSitPacket());
+                    player.stopRiding();
                 }
 
             }
