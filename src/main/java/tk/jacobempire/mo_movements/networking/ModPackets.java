@@ -10,6 +10,7 @@ import tk.jacobempire.mo_movements.MoMovements;
 import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
 import tk.jacobempire.mo_movements.networking.packet.LayPacket;
 import tk.jacobempire.mo_movements.networking.packet.SitPacket;
+import tk.jacobempire.mo_movements.networking.packet.UnSitPacket;
 
 public class ModPackets {
     private static SimpleChannel INSTANCE;
@@ -34,6 +35,12 @@ public class ModPackets {
                 .decoder(SitPacket::new)
                 .encoder(SitPacket::toBytes)
                 .consumerMainThread(SitPacket::handle)
+                .add();
+
+        net.messageBuilder(UnSitPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(UnSitPacket::new)
+                .encoder(UnSitPacket::toBytes)
+                .consumerMainThread(UnSitPacket::handle)
                 .add();
 
         net.messageBuilder(CrawlPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)

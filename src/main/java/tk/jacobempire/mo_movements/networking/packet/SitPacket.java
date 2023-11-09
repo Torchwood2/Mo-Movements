@@ -12,32 +12,32 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.List;
 import java.util.function.Supplier;
 
-public class SitPacket{
+public class SitPacket {
     public SitPacket() {
-
+        // Default constructor
     }
 
     public SitPacket(FriendlyByteBuf buf) {
-
+        // Read packet data from buffer
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-
+        // Write packet data to buffer
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
-            //WE ON DA SERVER
+            // We are on the server
             ServerPlayer player = context.getSender();
-            ServerLevel level = player.getLevel();
+            if (player != null) {
+                ServerLevel level = player.getLevel();
 
+                // Logic for when the player sits for the first time
                 ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, level);
-                armorStand.setPos(player.getX(), player.getY() -1.75, player.getZ());
+                armorStand.setPos(player.getX(), player.getY() - 1.75, player.getZ());
                 armorStand.getOnPos();
                 CompoundTag tag = armorStand.getPersistentData();
                 armorStand.setInvisible(true);
@@ -56,16 +56,7 @@ public class SitPacket{
                 level.addFreshEntity(armorStand);
                 player.startRiding(armorStand, true);
                 player.sendSystemMessage(Component.literal("You have sat down.").withStyle(ChatFormatting.GREEN));
-
-                // Find and kill unoccupied chairs
-                List<ArmorStand> chairs = level.getEntitiesOfClass(ArmorStand.class, armorStand.getBoundingBox().inflate(1.0));
-                for (ArmorStand chair : chairs) {
-                    if (tag.getBoolean("chair")) {
-                        if (chair.getPassengers().isEmpty()) {
-                            chair.discard();
-                        }
-                    }
-                }
+            }
         });
         return true;
     }

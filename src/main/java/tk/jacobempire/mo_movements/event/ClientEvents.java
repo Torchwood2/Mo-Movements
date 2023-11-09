@@ -27,6 +27,7 @@ import tk.jacobempire.mo_movements.networking.ModPackets;
 import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
 import tk.jacobempire.mo_movements.networking.packet.LayPacket;
 import tk.jacobempire.mo_movements.networking.packet.SitPacket;
+import tk.jacobempire.mo_movements.networking.packet.UnSitPacket;
 import tk.jacobempire.mo_movements.util.KeyBinding;
 
 import java.util.List;
@@ -37,6 +38,8 @@ import static net.minecraft.commands.Commands.literal;
 public class ClientEvents {
     public static boolean crawling = false;
     public static boolean laying = false;
+    public static boolean sitKeyPressed = false;
+
     private static final String TAG_CHAIR = "Chair";
 
     @SubscribeEvent
@@ -46,7 +49,6 @@ public class ClientEvents {
         if (player != null) {
             Level level = player.getLevel();
             if (KeyBinding.CRAWL_KEY.isDown()) {
-
                 ModPackets.sendToServer(new CrawlPacket());
 
             }
@@ -55,8 +57,14 @@ public class ClientEvents {
             }
 
             if (KeyBinding.SIT_KEY.isDown()) {
+                if (!sitKeyPressed){
+                    sitKeyPressed = true;
+                    ModPackets.sendToServer(new SitPacket());
+                } else {
+                    sitKeyPressed = false;
+                    ModPackets.sendToServer(new UnSitPacket());
+                }
 
-                ModPackets.sendToServer(new SitPacket());
             }
         }
     }
