@@ -24,7 +24,6 @@ import tk.jacobempire.mo_movements.config.MoMovementsClientConfigs;
 import tk.jacobempire.mo_movements.event.ClientEvents;
 import tk.jacobempire.mo_movements.networking.ModPackets;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(MoMovements.MODID)
 public class MoMovements
 {
@@ -32,39 +31,22 @@ public class MoMovements
     public static final String MODID = "momovements";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public MoMovements()
-    {
+    public MoMovements() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
-
-
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, MoMovementsClientConfigs.SPEC, "mo-movements-client.toml");
 
-        // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
+    private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-
         });
-
         ModPackets.register();
-    }
-
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
-    {
-
     }
 
     public void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         CommandSit.register(dispatcher);
-
     }
 
     @SubscribeEvent
@@ -79,14 +61,10 @@ public class MoMovements
             if (player.getForcedPose().equals(Pose.SLEEPING) || player.getForcedPose().equals(Pose.SWIMMING)) {
                 if (player.isUnderWater()) {
                     player.setForcedPose(null);
-                    ClientEvents.laying = false;
-                    ClientEvents.crawling = false;
                 }
             }
         }
     }
-
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {

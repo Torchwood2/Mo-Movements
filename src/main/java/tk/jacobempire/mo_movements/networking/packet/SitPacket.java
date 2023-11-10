@@ -36,7 +36,7 @@ public class SitPacket {
                 ServerLevel level = player.getLevel();
 
                 // Logic for when the player sits for the first time
-                ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, level){
+                ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, level) {
                     @Override
                     public void tick() {
                         super.tick();
@@ -58,7 +58,7 @@ public class SitPacket {
                 armorStand.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.AIR));
 
                 // Add "chair" tag to armor stand
-                tag.putBoolean("chair", true);
+                tag.putBoolean("Chair", true);
 
                 level.addFreshEntity(armorStand);
                 player.startRiding(armorStand, true);

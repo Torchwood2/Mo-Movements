@@ -6,21 +6,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class CrawlPacket {
+public class StandPacket {
 
-        public CrawlPacket() {
+        public StandPacket() {
 
         }
 
-        public CrawlPacket(FriendlyByteBuf buf) {
+        public StandPacket(FriendlyByteBuf buf) {
 
         }
 
@@ -34,9 +31,10 @@ public class CrawlPacket {
                 //WE ON DA SERVER
                 ServerPlayer player = context.getSender();
                 if (player != null) {
-                        if (player.getForcedPose() != Pose.SWIMMING) {
-                            player.setForcedPose(Pose.SWIMMING);
-                            player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
+                        if (player.getForcedPose() != null) {
+                            player.sendSystemMessage(Component.literal("You are now standing.").withStyle(ChatFormatting.GREEN));
+                            player.setForcedPose(null);
+                            player.refreshDimensions();
                         }
                     }
             });

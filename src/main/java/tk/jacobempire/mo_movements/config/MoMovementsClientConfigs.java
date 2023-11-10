@@ -9,9 +9,6 @@ public class MoMovementsClientConfigs {
     static {
         BUILDER.push("Configs for Mo' Movements");
 
-        //Define the Configs here
-
-
         BUILDER.pop();
         SPEC = BUILDER.build();
 

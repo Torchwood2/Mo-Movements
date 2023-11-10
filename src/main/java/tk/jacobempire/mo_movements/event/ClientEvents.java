@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,10 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import tk.jacobempire.mo_movements.MoMovements;
 import tk.jacobempire.mo_movements.networking.ModPackets;
-import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
-import tk.jacobempire.mo_movements.networking.packet.LayPacket;
-import tk.jacobempire.mo_movements.networking.packet.SitPacket;
-import tk.jacobempire.mo_movements.networking.packet.UnSitPacket;
+import tk.jacobempire.mo_movements.networking.packet.*;
 import tk.jacobempire.mo_movements.util.KeyBinding;
 
 import java.util.List;
@@ -36,8 +34,6 @@ import static net.minecraft.commands.Commands.literal;
 
 @Mod.EventBusSubscriber(modid = MoMovements.MODID, value = Dist.CLIENT)
 public class ClientEvents {
-    public static boolean crawling = false;
-    public static boolean laying = false;
     public static boolean sitKeyPressed = false;
 
     private static final String TAG_CHAIR = "Chair";
@@ -47,17 +43,21 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player != null) {
-            Level level = player.getLevel();
-            if (KeyBinding.CRAWL_KEY.isDown()) {
+            if (KeyBinding.CRAWL_KEY.isDown() && player.getForcedPose() == null) {
                 ModPackets.sendToServer(new CrawlPacket());
-
             }
-            if (KeyBinding.LAY_KEY.isDown()) {
+            if (KeyBinding.CRAWL_KEY.isDown() && player.getForcedPose() == Pose.SWIMMING) {
+                ModPackets.sendToServer(new StandPacket());
+            }
+            if (KeyBinding.LAY_KEY.isDown() && player.getForcedPose() == null) {
                 ModPackets.sendToServer(new LayPacket());
+            }
+            if (KeyBinding.LAY_KEY.isDown() && player.getForcedPose() == Pose.SLEEPING) {
+                ModPackets.sendToServer(new StandPacket());
             }
 
             if (KeyBinding.SIT_KEY.isDown()) {
-                if (!sitKeyPressed){
+                if (!sitKeyPressed) {
                     sitKeyPressed = true;
                     ModPackets.sendToServer(new SitPacket());
                 } else {
