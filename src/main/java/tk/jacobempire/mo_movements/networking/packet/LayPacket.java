@@ -31,9 +31,15 @@ public class LayPacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
-            //WE ON DA SERVER
+            // WE ON DA SERVER
             Minecraft mc = Minecraft.getInstance();
             Player player = mc.player;
+
+            // Check if the player is already riding an entity
+            if (player.isPassenger()) {
+                player.sendSystemMessage(Component.literal("You cannot lay down while riding an entity.").withStyle(ChatFormatting.RED));
+                return;
+            }
 
             if (!laying) {
                 player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));

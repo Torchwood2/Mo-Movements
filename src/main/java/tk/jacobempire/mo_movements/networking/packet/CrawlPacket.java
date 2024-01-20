@@ -28,27 +28,31 @@ public class CrawlPacket {
 
         }
 
-        public boolean handle(Supplier<NetworkEvent.Context> supplier) {
-            NetworkEvent.Context context = supplier.get();
-            context.enqueueWork(() -> {
-                //WE ON DA SERVER
-                Minecraft mc = Minecraft.getInstance();
-                Player player = mc.player;
-                if (player != null) {
-                    Level level = player.getLevel();
-                        if (!crawling) {
-                            player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
-                            player.setForcedPose(Pose.SWIMMING);
-                            player.refreshDimensions();
-                            crawling = true;
-                        } else {
-                            player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
-                            player.setForcedPose(null);
-                            player.refreshDimensions();
-                            crawling = false;
-                        }
-                    }
-            });
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context context = supplier.get();
+        context.enqueueWork(() -> {
+            // WE ON DA SERVER
+            Minecraft mc = Minecraft.getInstance();
+            Player player = mc.player;
+
+            // Check if the player is already riding an entity
+            if (player.isPassenger()) {
+                player.sendSystemMessage(Component.literal("You cannot crawl while riding an entity.").withStyle(ChatFormatting.RED));
+                return;
+            }
+
+            if (!crawling) {
+                player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
+                player.setForcedPose(Pose.SWIMMING);
+                player.refreshDimensions();
+                crawling = true;
+            } else {
+                player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
+                player.setForcedPose(null);
+                player.refreshDimensions();
+                crawling = false;
+            }
+        });
         return true;
-        }
+    }
 }

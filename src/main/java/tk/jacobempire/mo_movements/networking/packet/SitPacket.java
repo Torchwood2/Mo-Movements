@@ -33,37 +33,41 @@ public class SitPacket {
             // We are on the server
             ServerPlayer player = context.getSender();
             if (player != null) {
-                ServerLevel level = player.getLevel();
+                // Check if the player is already riding an entity
+                if (player.isPassenger()) {
+                    player.sendSystemMessage(Component.literal("You are already sitting.").withStyle(ChatFormatting.RED));
+                } else {
+                    ServerLevel level = player.getLevel();
 
-                // Logic for when the player sits for the first time
-                ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, level){
-                    @Override
-                    public void tick() {
-                        super.tick();
-                        if (!isVehicle())
-                            this.discard();
-                    }
-                };
-                armorStand.setPos(player.getX(), player.getY() - 1.75, player.getZ());
-                armorStand.getOnPos();
-                CompoundTag tag = armorStand.getPersistentData();
-                armorStand.setInvisible(true);
-                armorStand.setNoGravity(true);
-                armorStand.setInvulnerable(true);
-                tag.putBoolean("Marker", true);
-                tag.putBoolean("Small", true);
-                armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.AIR));
-                armorStand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.AIR));
-                armorStand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.AIR));
-                armorStand.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.AIR));
+                    // Logic for when the player sits for the first time
+                    ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, level) {
+                        @Override
+                        public void tick() {
+                            super.tick();
+                            if (!isVehicle())
+                                this.discard();
+                        }
+                    };
+                    armorStand.setPos(player.getX(), player.getY() - 1.75, player.getZ());
+                    armorStand.getOnPos();
+                    CompoundTag tag = armorStand.getPersistentData();
+                    armorStand.setInvisible(true);
+                    armorStand.setNoGravity(true);
+                    armorStand.setInvulnerable(true);
+                    tag.putBoolean("Marker", true);
+                    tag.putBoolean("Small", true);
+                    armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.AIR));
+                    armorStand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.AIR));
+                    armorStand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.AIR));
+                    armorStand.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.AIR));
 
-                // Add "chair" tag to armor stand
-                tag.putBoolean("chair", true);
+                    // Add "chair" tag to armor stand
+                    tag.putBoolean("Chair", true);
 
-                level.addFreshEntity(armorStand);
-                player.startRiding(armorStand, true);
-                player.sendSystemMessage(Component.literal("You have sat down.").withStyle(ChatFormatting.GREEN));
-                player.isPassenger();
+                    level.addFreshEntity(armorStand);
+                    player.startRiding(armorStand, true);
+                    player.sendSystemMessage(Component.literal("You have sat down.").withStyle(ChatFormatting.GREEN));
+                }
             }
         });
         return true;
