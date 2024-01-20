@@ -48,7 +48,7 @@ public class CommandSit {
                 armorStand.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.AIR));
 
                 // Add "chair" tag to armor stand
-                tag.putBoolean("Chair", true);
+                tag.putBoolean("chair", true);
 
                 level.addFreshEntity(armorStand);
                 player.startRiding(armorStand, true);
@@ -57,7 +57,7 @@ public class CommandSit {
                 // Find and kill unoccupied chairs
                 List<ArmorStand> chairs = level.getEntitiesOfClass(ArmorStand.class, armorStand.getBoundingBox().inflate(1.0));
                 for (ArmorStand chair : chairs) {
-                        if (tag.getBoolean("Chair")) {
+                        if (tag.getBoolean("chair")) {
                             if (chair.getPassengers().isEmpty()) {
                                 chair.discard();
                             }

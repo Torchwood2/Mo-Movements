@@ -7,7 +7,10 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import tk.jacobempire.mo_movements.MoMovements;
-import tk.jacobempire.mo_movements.networking.packet.*;
+import tk.jacobempire.mo_movements.networking.packet.CrawlPacket;
+import tk.jacobempire.mo_movements.networking.packet.LayPacket;
+import tk.jacobempire.mo_movements.networking.packet.SitPacket;
+import tk.jacobempire.mo_movements.networking.packet.UnSitPacket;
 
 public class ModPackets {
     private static SimpleChannel INSTANCE;
@@ -50,12 +53,6 @@ public class ModPackets {
                 .decoder(LayPacket::new)
                 .encoder(LayPacket::toBytes)
                 .consumerMainThread(LayPacket::handle)
-                .add();
-
-        net.messageBuilder(StandPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(StandPacket::new)
-                .encoder(StandPacket::toBytes)
-                .consumerMainThread(StandPacket::handle)
                 .add();
     }
 

@@ -4,13 +4,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
+
+import static tk.jacobempire.mo_movements.event.ClientEvents.crawling;
+import static tk.jacobempire.mo_movements.event.ClientEvents.laying;
 
 public class LayPacket {
 
@@ -30,12 +32,19 @@ public class LayPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             //WE ON DA SERVER
-            ServerPlayer player = context.getSender();
-            if (!player.getForcedPose().equals(Pose.SLEEPING)) {
-                player.setForcedPose(null);
+            Minecraft mc = Minecraft.getInstance();
+            Player player = mc.player;
+
+            if (!laying) {
                 player.sendSystemMessage(Component.literal("You are now laying down.").withStyle(ChatFormatting.GREEN));
                 player.setForcedPose(Pose.SLEEPING);
                 player.refreshDimensions();
+                laying = true;
+            } else {
+                player.sendSystemMessage(Component.literal("You are no longer laying down.").withStyle(ChatFormatting.GREEN));
+                player.setForcedPose(null);
+                player.refreshDimensions();
+                laying = false;
             }
         });
         return true;

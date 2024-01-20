@@ -5,14 +5,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
+
+import static tk.jacobempire.mo_movements.event.ClientEvents.crawling;
 
 public class CrawlPacket {
 
@@ -32,11 +32,20 @@ public class CrawlPacket {
             NetworkEvent.Context context = supplier.get();
             context.enqueueWork(() -> {
                 //WE ON DA SERVER
-                ServerPlayer player = context.getSender();
+                Minecraft mc = Minecraft.getInstance();
+                Player player = mc.player;
                 if (player != null) {
-                        if (player.getForcedPose() != Pose.SWIMMING) {
-                            player.setForcedPose(Pose.SWIMMING);
+                    Level level = player.getLevel();
+                        if (!crawling) {
                             player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
+                            player.setForcedPose(Pose.SWIMMING);
+                            player.refreshDimensions();
+                            crawling = true;
+                        } else {
+                            player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
+                            player.setForcedPose(null);
+                            player.refreshDimensions();
+                            crawling = false;
                         }
                     }
             });
