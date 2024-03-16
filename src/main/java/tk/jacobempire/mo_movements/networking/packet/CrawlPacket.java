@@ -32,8 +32,7 @@ public class CrawlPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             // WE ON DA SERVER
-            Minecraft mc = Minecraft.getInstance();
-            Player player = mc.player;
+            Player player = supplier.get().getSender();
 
             // Check if the player is already riding an entity
             if (player.isPassenger()) {
@@ -45,6 +44,7 @@ public class CrawlPacket {
                 player.sendSystemMessage(Component.literal("You are now crawling.").withStyle(ChatFormatting.GREEN));
                 player.setForcedPose(Pose.SWIMMING);
                 player.refreshDimensions();
+                //player.getDimensions(player.getForcedPose()).scale(0, -0.5f); not sure if it works
                 crawling = true;
             } else {
                 player.sendSystemMessage(Component.literal("You are no longer crawling.").withStyle(ChatFormatting.GREEN));
